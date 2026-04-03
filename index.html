@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FFF8F0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Heroville">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="data:application/json,{%22name%22:%22Heroville%22,%22short_name%22:%22Heroville%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23FFF8F0%22,%22theme_color%22:%22%23FF6B6B%22}">
+<title>Heroville — Adopt. Care. Save.</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FFF8F0;--bg2:#FFF1E6;--card:#FFFFFF;--card-shadow:0 4px 20px rgba(0,0,0,.08);
+  --primary:#FF6B6B;--primary-dark:#E85555;--secondary:#4ECDC4;--secondary-dark:#3DBDB5;
+  --accent:#FFD93D;--gold:#F0B90B;--text:#3D3D3D;--text-light:#888;--danger:#FF4757;
+  --success:#26DE81;--purple:#A55EEA;
+  --hunger:#FF6348;--thirst:#54A0FF;--happy:#FECA57;--health:#FF6B81;
+  --energy:#5F27CD;--clean:#1DD1A1;
+  --radius:16px;--radius-sm:10px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-left:env(safe-area-inset-left,0px);
+  --safe-right:env(safe-area-inset-right,0px);
+}
+html{
+  font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);
+  overscroll-behavior-y:contain;-webkit-text-size-adjust:100%;
+}
+body{
+  max-width:480px;margin:0 auto;min-height:100dvh;position:relative;overflow-x:hidden;
+  padding-top:var(--safe-top);padding-left:var(--safe-left);padding-right:var(--safe-right);
+  -webkit-user-select:none;user-select:none;touch-action:pan-y;
+}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input{font-family:inherit;font-size:16px}
+
+.screen{display:none;flex-direction:column;min-height:100dvh;padding:20px;animation:fadeIn .4s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Welcome */
+.welcome{align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#FFF1E6 0%,#FFE0CC 50%,#FFDAB9 100%)}
+.welcome h1{font-size:3rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px}
+.welcome .tagline{font-size:1.1rem;color:var(--text-light);margin:8px 0 32px}
+.welcome .shelter-note{font-size:.85rem;color:var(--secondary-dark);margin-top:24px;padding:12px 20px;background:rgba(78,205,196,.1);border-radius:var(--radius-sm)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:600;transition:all .15s;min-height:48px}
+.btn-primary{background:var(--primary);color:#fff}
+@media(hover:hover){.btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,107,107,.3)}}
+.btn-secondary{background:var(--secondary);color:#fff}
+@media(hover:hover){.btn-secondary:hover{background:var(--secondary-dark)}}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-sm{padding:12px 22px;font-size:.95rem}
+.btn:active{transform:scale(.94);opacity:.9}
+
+/* Choose Type */
+.choose-type{align-items:center;justify-content:center;background:var(--bg)}
+.choose-type h2{font-size:1.8rem;font-weight:700;margin-bottom:8px}
+.choose-type .sub{color:var(--text-light);margin-bottom:32px}
+.type-cards{display:flex;gap:20px;width:100%}
+.type-card{flex:1;padding:36px 20px;background:var(--card);border-radius:var(--radius);box-shadow:var(--card-shadow);text-align:center;cursor:pointer;transition:all .2s;border:3px solid transparent;min-height:140px}
+@media(hover:hover){.type-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.12)}}
+.type-card:active{transform:scale(.96);background:#FFF5F5}
+.type-card.selected{border-color:var(--primary);background:#FFF5F5}
+.type-card .emoji{font-size:4.5rem;display:block;margin-bottom:12px}
+.type-card .label{font-size:1.3rem;font-weight:600}
+
+/* Breed Grid */
+.choose-breed{background:var(--bg)}
+.choose-breed h2{font-size:1.6rem;font-weight:700;text-align:center;margin-bottom:4px}
+.choose-breed .sub{text-align:center;color:var(--text-light);margin-bottom:20px}
+.breed-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;overflow-y:auto;padding-bottom:80px}
+.breed-card{padding:18px 14px;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--card-shadow);text-align:center;cursor:pointer;transition:all .15s;border:3px solid transparent;min-height:120px}
+@media(hover:hover){.breed-card:hover{transform:translateY(-2px)}}
+.breed-card:active{transform:scale(.96);background:#FFF5F5}
+.breed-card.selected{border-color:var(--primary);background:#FFF5F5}
+.breed-card .swatch{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;border:3px solid rgba(0,0,0,.1)}
+.breed-card .bname{font-weight:600;font-size:1rem;margin-bottom:4px}
+.breed-card .trait{font-size:.8rem;color:var(--text-light);line-height:1.35}
+.bottom-action{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:16px 20px;background:linear-gradient(transparent,var(--bg) 30%);z-index:10}
+
+/* Name */
+.name-pet{align-items:center;justify-content:center;background:var(--bg)}
+.name-pet .preview{font-size:5rem;margin-bottom:16px}
+.name-pet h2{font-size:1.6rem;font-weight:700;margin-bottom:4px}
+.name-pet .sub{color:var(--text-light);margin-bottom:24px}
+.name-input{width:100%;max-width:320px;padding:14px 20px;font-size:1.1rem;border:2px solid #E8E8E8;border-radius:50px;text-align:center;transition:border .2s;background:var(--card)}
+.name-input:focus{border-color:var(--primary);outline:none}
+.random-btn{margin-top:12px;color:var(--secondary-dark);background:none;font-size:.9rem;font-weight:600;text-decoration:underline;cursor:pointer}
+
+/* Main Game */
+.game{background:var(--bg);padding:0}
+.game-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px;position:sticky;top:0;background:var(--bg);z-index:5}
+.coins{display:flex;align-items:center;gap:6px;font-weight:700;font-size:1.1rem;color:var(--gold)}
+.coins .coin-icon{width:24px;height:24px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#8B6914;box-shadow:0 2px 4px rgba(240,185,11,.3)}
+.day-badge{font-size:.85rem;color:var(--text-light);font-weight:500}
+.speed-toggle{padding:6px 12px;border-radius:20px;font-size:.75rem;font-weight:600;background:var(--bg2);color:var(--text-light);cursor:pointer}
+.speed-toggle.fast{background:var(--primary);color:#fff}
+
+.pet-area{display:flex;flex-direction:column;align-items:center;padding:10px 20px 6px;position:relative}
+.pet-scene{width:180px;height:180px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pet-scene:active .pet-sprite{transform:scale(1.1)}
+.pet-sprite{font-size:6.5rem;line-height:1;transition:all .2s;position:relative;z-index:1}
+.pet-sprite.happy{animation:petBounce 1s ease infinite}
+.pet-sprite.sad{animation:petSad 2s ease infinite;filter:saturate(.6)}
+.pet-sprite.sick{animation:petShake .5s ease infinite;filter:hue-rotate(80deg) saturate(.5)}
+.pet-sprite.sleeping{animation:petSleep 3s ease infinite;opacity:.8}
+.pet-sprite.dead{filter:grayscale(1);opacity:.4}
+.pet-sprite.eating{animation:petEat .4s ease 3}
+.pet-sprite.playing{animation:petPlay .6s ease 4}
+
+@keyframes petBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes petSad{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(4px) rotate(2deg)}}
+@keyframes petShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes petSleep{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes petEat{0%,100%{transform:rotate(0)}50%{transform:rotate(-10deg) translateY(4px)}}
+@keyframes petPlay{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-5deg) scale(1.05)}75%{transform:rotate(5deg) scale(1.05)}}
+
+.floating-particles{position:absolute;inset:0;pointer-events:none;z-index:2}
+.particle{position:absolute;animation:floatUp 1.5s ease forwards;opacity:0;font-size:1.5rem}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(.5)}50%{opacity:1}100%{opacity:0;transform:translateY(-80px) scale(1.2)}}
+
+.pet-info{text-align:center;margin-top:4px}
+.pet-name{font-size:1.3rem;font-weight:700}
+.pet-mood{font-size:.85rem;color:var(--text-light);margin-top:1px}
+.pet-breed{font-size:.75rem;color:var(--text-light)}
+
+/* Needs */
+.needs{padding:6px 20px 0}
+.need-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.need-icon{width:24px;text-align:center;font-size:.9rem}
+.need-bar-bg{flex:1;height:12px;background:#EEE;border-radius:6px;overflow:hidden;position:relative}
+.need-bar{height:100%;border-radius:6px;transition:width .5s ease;position:relative}
+.need-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.3) 0%,transparent 60%);border-radius:7px}
+.need-val{width:32px;font-size:.75rem;font-weight:600;text-align:right;color:var(--text-light)}
+.need-bar.critical{animation:barPulse 1s ease infinite}
+@keyframes barPulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Actions */
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 16px}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 8px;background:var(--card);border-radius:var(--radius-sm);box-shadow:0 2px 10px rgba(0,0,0,.06);transition:all .15s;position:relative;min-height:72px;touch-action:manipulation}
+@media(hover:hover){.action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1)}}
+.action-btn:active{transform:scale(.92);background:#FFF5F5}
+.action-btn .act-icon{font-size:1.8rem}
+.action-btn .act-label{font-size:.8rem;font-weight:600;color:var(--text)}
+.action-btn .act-cost{font-size:.7rem;color:var(--gold);font-weight:600}
+.action-btn.disabled{opacity:.4;pointer-events:none}
+.action-cooldown{position:absolute;inset:0;background:rgba(255,255,255,.7);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--primary)}
+
+/* Tab Bar */
+.tab-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:var(--card);border-top:1px solid #EEE;z-index:20;padding:6px 0;padding-bottom:max(10px,var(--safe-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px;background:none;color:var(--text-light);font-size:.7rem;font-weight:600;transition:color .15s;min-height:48px;touch-action:manipulation;position:relative}
+.tab .tab-icon{font-size:1.4rem}
+.tab.active{color:var(--primary)}
+.tab.active::after{content:'';position:absolute;top:0;left:25%;right:25%;height:3px;background:var(--primary);border-radius:0 0 3px 3px}
+.tab:active{opacity:.7}
+
+/* Shop */
+.shop-screen{background:var(--bg);padding-bottom:80px}
+.shop-screen h2{font-size:1.4rem;font-weight:700;padding:20px 20px 4px}
+.shop-screen .sub{color:var(--text-light);padding:0 20px;font-size:.9rem;margin-bottom:16px}
+.shop-cat{padding:0 20px;margin-bottom:20px}
+.shop-cat h3{font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text)}
+.shop-items{display:flex;flex-direction:column;gap:8px}
+.shop-item{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--card-shadow);min-height:64px}
+.shop-item .si-icon{font-size:1.8rem}
+.shop-item .si-info{flex:1}
+.shop-item .si-name{font-weight:600;font-size:.95rem}
+.shop-item .si-desc{font-size:.8rem;color:var(--text-light);margin-top:2px}
+.shop-item .si-effect{font-size:.75rem;color:var(--success);margin-top:2px}
+.shop-buy{padding:10px 18px;border-radius:20px;font-size:.9rem;font-weight:600;background:var(--accent);color:#8B6914;white-space:nowrap;min-height:44px;min-width:72px;touch-action:manipulation}
+@media(hover:hover){.shop-buy:hover{background:#FFE566}}
+.shop-buy:active{transform:scale(.95);opacity:.85}
+.shop-buy.owned{background:#EEE;color:var(--text-light)}
+
+/* Stats */
+.stats-screen{background:var(--bg);padding:20px;padding-bottom:80px}
+.stats-screen h2{font-size:1.4rem;font-weight:700;margin-bottom:16px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.stat-card{padding:16px;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--card-shadow);text-align:center}
+.stat-card .sv{font-size:1.6rem;font-weight:800;color:var(--primary)}
+.stat-card .sl{font-size:.8rem;color:var(--text-light);margin-top:4px}
+.achievements h3{font-size:1.1rem;font-weight:700;margin-bottom:12px}
+.ach-grid{display:flex;flex-direction:column;gap:8px}
+.ach-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--card-shadow)}
+.ach-item .ach-icon{font-size:1.6rem;opacity:.3}
+.ach-item.earned .ach-icon{opacity:1}
+.ach-item .ach-info{flex:1}
+.ach-item .ach-name{font-weight:600;font-size:.9rem}
+.ach-item .ach-desc{font-size:.8rem;color:var(--text-light)}
+.ach-item.earned{background:#F0FFF4;border:1px solid #C6F6D5}
+
+/* Shelter */
+.shelter-screen{background:var(--bg);padding:20px;padding-bottom:80px}
+.shelter-screen h2{font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.shelter-screen .mission{color:var(--text-light);font-size:.9rem;margin-bottom:20px;line-height:1.5}
+.donation-total{text-align:center;padding:24px;background:linear-gradient(135deg,#E8F8F5,#D5F5E3);border-radius:var(--radius);margin-bottom:20px}
+.donation-total .dt-amount{font-size:2.4rem;font-weight:800;color:var(--secondary-dark)}
+.donation-total .dt-label{font-size:.9rem;color:var(--text-light);margin-top:4px}
+.shelter-cards{display:flex;flex-direction:column;gap:12px}
+.shelter-card{padding:16px;background:var(--card);border-radius:var(--radius-sm);box-shadow:var(--card-shadow)}
+.shelter-card h4{font-weight:700;margin-bottom:4px}
+.shelter-card p{font-size:.85rem;color:var(--text-light);line-height:1.4}
+.shelter-card .impact{font-size:.85rem;font-weight:600;color:var(--secondary-dark);margin-top:8px}
+.donate-btn{margin-top:20px;width:100%}
+
+/* Notifications */
+.toast-container{position:fixed;top:calc(12px + var(--safe-top));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:440px;z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:12px 16px;background:var(--card);border-radius:var(--radius-sm);box-shadow:0 4px 20px rgba(0,0,0,.15);display:flex;align-items:center;gap:10px;animation:toastIn .4s ease,toastOut .4s ease 3s forwards;pointer-events:auto;font-size:.9rem;font-weight:500}
+.toast .toast-icon{font-size:1.3rem}
+@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-10px)}}
+
+/* Death screen overlay */
+.death-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:200;flex-direction:column;color:#fff;text-align:center;padding:40px}
+.death-overlay.active{display:flex}
+.death-overlay h2{font-size:2rem;font-weight:800;margin:16px 0 8px}
+.death-overlay p{color:rgba(255,255,255,.7);margin-bottom:24px;line-height:1.5}
+.death-overlay .death-emoji{font-size:5rem;filter:grayscale(1);opacity:.6}
+
+/* Small phones (SE, Mini) */
+@media(max-width:380px){
+  .type-cards{flex-direction:column;gap:14px}
+  .type-card{min-height:110px;padding:24px 16px}
+  .type-card .emoji{font-size:3.5rem}
+  .breed-grid{gap:8px}
+  .breed-card{padding:14px 10px;min-height:100px}
+  .pet-scene{width:140px;height:140px}
+  .pet-sprite{font-size:5rem}
+  .actions{gap:8px;padding:10px 12px}
+  .action-btn{padding:12px 6px;min-height:64px}
+  .action-btn .act-icon{font-size:1.5rem}
+}
+/* Tall phones — more pet area breathing room */
+@media(min-height:750px){
+  .pet-area{padding:16px 20px 8px}
+  .pet-scene{width:200px;height:200px}
+  .pet-sprite{font-size:7rem}
+}
+/* Landscape — side-by-side layout */
+@media(max-height:500px) and (orientation:landscape){
+  .game{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto}
+  .game-header{grid-column:1/-1}
+  .pet-area{grid-column:1;padding:8px}
+  .pet-scene{width:120px;height:120px}
+  .pet-sprite{font-size:4.5rem}
+  .needs{grid-column:2;padding:8px 12px}
+  .actions{grid-column:1/-1;grid-template-columns:repeat(6,1fr);gap:6px;padding:8px 12px}
+  .action-btn{flex-direction:row;padding:10px 6px;min-height:44px;gap:6px}
+  .action-btn .act-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Welcome -->
+<div class="screen welcome" id="screen-welcome">
+  <h1>Heroville</h1>
+  <p class="tagline">Adopt. Care. Save real lives.</p>
+  <button class="btn btn-primary" onclick="UI.goTo('choose-type')">Adopt a Pet</button>
+  <p class="shelter-note">A portion of all in-game purchases supports real animal shelters</p>
+</div>
+
+<!-- Choose Type -->
+<div class="screen choose-type" id="screen-choose-type">
+  <h2>Who needs a home?</h2>
+  <p class="sub">Choose your companion</p>
+  <div class="type-cards">
+    <div class="type-card" onclick="Game.setType('dog')">
+      <span class="emoji">🐕</span>
+      <span class="label">Dog</span>
+    </div>
+    <div class="type-card" onclick="Game.setType('cat')">
+      <span class="emoji">🐈</span>
+      <span class="label">Cat</span>
+    </div>
+  </div>
+</div>
+
+<!-- Choose Breed -->
+<div class="screen choose-breed" id="screen-choose-breed">
+  <h2>Pick a breed</h2>
+  <p class="sub">Each breed has unique traits</p>
+  <div class="breed-grid" id="breed-grid"></div>
+  <div class="bottom-action">
+    <button class="btn btn-primary" style="width:100%" onclick="Game.confirmBreed()" id="btn-confirm-breed" disabled>Choose This Breed</button>
+  </div>
+</div>
+
+<!-- Name Pet -->
+<div class="screen name-pet" id="screen-name-pet">
+  <div class="preview" id="name-preview-emoji"></div>
+  <h2>Name your new friend</h2>
+  <p class="sub" id="name-breed-label"></p>
+  <input class="name-input" id="pet-name-input" type="text" placeholder="Enter a name..." maxlength="20" autocomplete="off">
+  <button class="random-btn" onclick="Game.randomName()">Random name</button>
+  <div style="margin-top:24px">
+    <button class="btn btn-primary" onclick="Game.confirmName()" id="btn-confirm-name">Bring Them Home</button>
+  </div>
+</div>
+
+<!-- Main Game -->
+<div class="screen game" id="screen-game">
+  <div class="game-header">
+    <div class="coins"><div class="coin-icon">$</div><span id="coin-count">100</span></div>
+    <div class="day-badge" id="day-badge">Day 1</div>
+    <button class="speed-toggle" id="speed-toggle" onclick="Game.toggleSpeed()">1× Speed</button>
+  </div>
+
+  <div class="pet-area">
+    <div class="pet-scene">
+      <div class="pet-sprite" id="pet-sprite"></div>
+      <div class="floating-particles" id="particles"></div>
+    </div>
+    <div class="pet-info">
+      <div class="pet-name" id="game-pet-name"></div>
+      <div class="pet-mood" id="game-pet-mood"></div>
+      <div class="pet-breed" id="game-pet-breed"></div>
+    </div>
+  </div>
+
+  <div class="needs" id="needs-container"></div>
+
+  <div class="actions" id="actions-container"></div>
+
+  <div style="height:calc(72px + var(--safe-bottom))"></div>
+</div>
+
+<!-- Shop -->
+<div class="screen shop-screen" id="screen-shop">
+  <h2>Pet Shop</h2>
+  <p class="sub">Keep your pet happy and healthy</p>
+  <div id="shop-content"></div>
+  <div style="height:72px"></div>
+</div>
+
+<!-- Stats -->
+<div class="screen stats-screen" id="screen-stats">
+  <h2>Pet Stats</h2>
+  <div class="stat-grid" id="stat-grid"></div>
+  <div class="achievements">
+    <h3>Achievements</h3>
+    <div class="ach-grid" id="ach-grid"></div>
+  </div>
+  <div style="height:72px"></div>
+</div>
+
+<!-- Shelter -->
+<div class="screen shelter-screen" id="screen-shelter">
+  <h2>Animal Shelter</h2>
+  <p class="mission">Every virtual adoption helps real animals. A portion of all Heroville proceeds is donated to local shelters.</p>
+  <div class="donation-total">
+    <div class="dt-amount" id="donation-amount">$0.00</div>
+    <div class="dt-label">Community donations to date</div>
+  </div>
+  <div class="shelter-cards">
+    <div class="shelter-card">
+      <h4>🏠 Hope Animal Rescue</h4>
+      <p>A no-kill shelter providing medical care, rehabilitation, and forever homes for abandoned cats and dogs.</p>
+      <div class="impact">Your play has helped feed 12 animals this month</div>
+    </div>
+    <div class="shelter-card">
+      <h4>🐾 Second Chance Sanctuary</h4>
+      <p>Specializing in senior pet adoption and hospice care for animals no one else will take.</p>
+      <div class="impact">Your care inspired 3 real-world adoptions</div>
+    </div>
+    <div class="shelter-card">
+      <h4>🩺 Street Paws Clinic</h4>
+      <p>Free veterinary services for stray and community cats in underserved neighborhoods.</p>
+      <div class="impact">Your donations funded 2 spay/neuter surgeries</div>
+    </div>
+  </div>
+  <button class="btn btn-secondary donate-btn" onclick="Game.donate()">Donate 50 Coins to Shelters</button>
+  <div style="height:72px"></div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar" id="tab-bar" style="display:none">
+  <button class="tab active" onclick="UI.switchTab('game')"><span class="tab-icon">🏠</span>Home</button>
+  <button class="tab" onclick="UI.switchTab('shop')"><span class="tab-icon">🛒</span>Shop</button>
+  <button class="tab" onclick="UI.switchTab('stats')"><span class="tab-icon">📊</span>Stats</button>
+  <button class="tab" onclick="UI.switchTab('shelter')"><span class="tab-icon">💝</span>Shelter</button>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Death overlay -->
+<div class="death-overlay" id="death-overlay">
+  <div class="death-emoji" id="death-emoji"></div>
+  <h2>Your pet has passed away</h2>
+  <p id="death-message">Without proper care, your companion couldn't hold on. Every virtual pet — and every real one — depends on someone who shows up.</p>
+  <button class="btn btn-primary" onclick="Game.restart()" style="margin-top:8px">Adopt Again</button>
+  <button class="btn btn-outline" onclick="UI.switchTab('shelter')" style="margin-top:8px;color:#fff;border-color:rgba(255,255,255,.4)">Visit Shelter</button>
+</div>
+
+<script>
+const BREEDS = {
+  dog: [
+    {id:'golden',name:'Golden Retriever',color:'#DAA520',emoji:'🐕',trait:'Loyal & gentle. Moderate energy, loves walks.',mods:{happiness:1.1,energy:0.9}},
+    {id:'husky',name:'Siberian Husky',color:'#7B9EBF',emoji:'🐺',trait:'High energy, needs lots of exercise.',mods:{energy:1.3,hunger:1.1}},
+    {id:'corgi',name:'Corgi',color:'#D2691E',emoji:'🐶',trait:'Playful & stubborn. Big appetite for small legs.',mods:{hunger:1.2,happiness:1.1}},
+    {id:'shepherd',name:'German Shepherd',color:'#8B4513',emoji:'🦮',trait:'Smart & protective. Needs mental stimulation.',mods:{happiness:1.2,health:0.9}},
+    {id:'poodle',name:'Poodle',color:'#F5F0E1',emoji:'🐩',trait:'Elegant & hypoallergenic. Needs regular grooming.',mods:{clean:1.3,happiness:1.0}},
+    {id:'beagle',name:'Beagle',color:'#CD853F',emoji:'🐕‍🦺',trait:'Curious & food-driven. Will eat anything.',mods:{hunger:1.3,happiness:1.05}},
+    {id:'labrador',name:'Labrador',color:'#F4A460',emoji:'🐕',trait:'Friendly & outgoing. Always hungry, always happy.',mods:{hunger:1.15,happiness:0.85}},
+    {id:'bulldog',name:'Bulldog',color:'#DEB887',emoji:'🐶',trait:'Chill & lovable. Low energy, high appetite.',mods:{energy:0.7,hunger:1.1}},
+  ],
+  cat: [
+    {id:'tabby',name:'Tabby',color:'#D2691E',emoji:'🐈',trait:'Classic & adaptable. Low-maintenance companion.',mods:{happiness:0.95,clean:0.9}},
+    {id:'siamese',name:'Siamese',color:'#F5DEB3',emoji:'🐱',trait:'Vocal & social. Gets lonely fast.',mods:{happiness:1.3,energy:1.0}},
+    {id:'persian',name:'Persian',color:'#FAFAD2',emoji:'🐈',trait:'Luxurious coat, needs constant grooming.',mods:{clean:1.4,energy:0.8}},
+    {id:'maine_coon',name:'Maine Coon',color:'#8B7355',emoji:'🐱',trait:'Gentle giant. Big appetite, big heart.',mods:{hunger:1.2,happiness:0.9}},
+    {id:'british_sh',name:'British Shorthair',color:'#778899',emoji:'🐈',trait:'Calm & independent. Easy to care for.',mods:{happiness:0.85,energy:0.85}},
+    {id:'bengal',name:'Bengal',color:'#DAA520',emoji:'🐱',trait:'Wild & athletic. Needs constant play.',mods:{energy:1.3,happiness:1.2}},
+    {id:'ragdoll',name:'Ragdoll',color:'#F0EDE5',emoji:'🐈',trait:'Floppy & docile. Loves being held.',mods:{happiness:0.8,clean:1.05}},
+    {id:'sphynx',name:'Sphynx',color:'#FFDAB9',emoji:'🐱',trait:'Hairless & warm. Surprisingly cuddly.',mods:{clean:1.2,health:1.1}},
+  ]
+};
+
+const NAMES = {
+  dog:['Buddy','Max','Charlie','Cooper','Rocky','Bear','Duke','Tucker','Milo','Biscuit','Scout','Finn','Ollie','Rosie','Daisy','Luna','Bella','Sadie','Coco','Pepper'],
+  cat:['Whiskers','Mittens','Shadow','Luna','Mochi','Nala','Simba','Oliver','Leo','Ginger','Cleo','Felix','Willow','Binx','Salem','Tofu','Boba','Fig','Peach','Sage']
+};
+
+const NEEDS = [
+  {id:'hunger',label:'Hunger',icon:'🍖',color:'var(--hunger)'},
+  {id:'thirst',label:'Thirst',icon:'💧',color:'var(--thirst)'},
+  {id:'happiness',label:'Happiness',icon:'💛',color:'var(--happy)'},
+  {id:'health',label:'Health',icon:'❤️',color:'var(--health)'},
+  {id:'energy',label:'Energy',icon:'⚡',color:'var(--energy)'},
+  {id:'clean',label:'Cleanliness',icon:'✨',color:'var(--clean)'},
+];
+
+const ACTIONS = [
+  {id:'feed',label:'Feed',icon:'🍖',cost:5,cooldown:3,needs:{hunger:30,health:2},energyCost:0},
+  {id:'water',label:'Water',icon:'💧',cost:0,cooldown:2,needs:{thirst:40},energyCost:0},
+  {id:'walk',label:'Walk',icon:'🦮',cost:0,cooldown:8,needs:{happiness:20,hunger:-8,clean:-10},energyCost:15},
+  {id:'play',label:'Play',icon:'🎾',cost:0,cooldown:5,needs:{happiness:25},energyCost:20},
+  {id:'groom',label:'Groom',icon:'🛁',cost:3,cooldown:6,needs:{clean:40,happiness:5},energyCost:5},
+  {id:'vet',label:'Vet',icon:'🩺',cost:20,cooldown:30,needs:{health:40},energyCost:10},
+];
+
+const SHOP_ITEMS = [
+  {cat:'Food',items:[
+    {id:'kibble',name:'Basic Kibble',desc:'Standard pet food',icon:'🥫',cost:5,effect:{hunger:25},effectLabel:'+25 Hunger'},
+    {id:'premium_food',name:'Premium Organic',desc:'Grain-free, vet-approved',icon:'🥩',cost:15,effect:{hunger:50,health:5},effectLabel:'+50 Hunger, +5 Health'},
+    {id:'treats',name:'Gourmet Treats',desc:'Special reward snacks',icon:'🦴',cost:8,effect:{hunger:15,happiness:15},effectLabel:'+15 Hunger, +15 Happy'},
+  ]},
+  {cat:'Toys',items:[
+    {id:'ball',name:'Tennis Ball',desc:'Classic fetch toy',icon:'🎾',cost:10,effect:{happiness:20,energy:-10},effectLabel:'+20 Happy'},
+    {id:'mouse_toy',name:'Squeaky Mouse',desc:'Irresistible for cats',icon:'🐭',cost:12,effect:{happiness:25,energy:-15},effectLabel:'+25 Happy'},
+    {id:'puzzle',name:'Puzzle Feeder',desc:'Mental stimulation toy',icon:'🧩',cost:20,effect:{happiness:30,hunger:10},effectLabel:'+30 Happy, +10 Hunger'},
+  ]},
+  {cat:'Care',items:[
+    {id:'vitamins',name:'Daily Vitamins',desc:'Boosts immune system',icon:'💊',cost:15,effect:{health:20},effectLabel:'+20 Health'},
+    {id:'shampoo',name:'Luxury Shampoo',desc:'Deep clean & coat shine',icon:'🧴',cost:10,effect:{clean:50,happiness:5},effectLabel:'+50 Clean'},
+    {id:'bed',name:'Cozy Pet Bed',desc:'Premium sleeping spot',icon:'🛏️',cost:25,effect:{energy:40,happiness:10},effectLabel:'+40 Energy, +10 Happy'},
+  ]},
+];
+
+const ACHIEVEMENTS = [
+  {id:'first_feed',name:'First Meal',desc:'Feed your pet for the first time',icon:'🍽️'},
+  {id:'day_3',name:'3-Day Streak',desc:'Keep your pet alive for 3 days',icon:'📅'},
+  {id:'day_7',name:'One Week',desc:'A full week together',icon:'🏅'},
+  {id:'full_needs',name:'Perfect Care',desc:'All needs above 90% at once',icon:'⭐'},
+  {id:'spend_100',name:'Big Spender',desc:'Spend 100 coins total',icon:'💰'},
+  {id:'donate_first',name:'Hero Heart',desc:'Make your first shelter donation',icon:'💝'},
+  {id:'all_actions',name:'Attentive Owner',desc:'Use every care action at least once',icon:'🎯'},
+  {id:'close_call',name:'Close Call',desc:'Save your pet from below 10% health',icon:'😰'},
+  {id:'day_30',name:'Best Friend',desc:'30 days together',icon:'🏆'},
+];
+
+const BASE_DECAY = {hunger:0.045,thirst:0.065,happiness:0.03,health:0.008,energy:0.018,clean:0.02};
+
+const Game = {
+  pet: null,
+  coins: 100,
+  day: 1,
+  totalCoinsSpent: 0,
+  totalDonations: 0,
+  shelterDonationCoins: 0,
+  achievements: new Set(),
+  actionsUsed: new Set(),
+  cooldowns: {},
+  speed: 1,
+  lastUpdate: Date.now(),
+  tickInterval: null,
+  saveInterval: null,
+  toastQueue: [],
+  selectedType: null,
+  selectedBreed: null,
+  started: false,
+
+  init() {
+    const saved = localStorage.getItem('heroville_save');
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        this.pet = d.pet;
+        this.coins = d.coins || 100;
+        this.day = d.day || 1;
+        this.totalCoinsSpent = d.totalCoinsSpent || 0;
+        this.totalDonations = d.totalDonations || 0;
+        this.shelterDonationCoins = d.shelterDonationCoins || 0;
+        this.achievements = new Set(d.achievements || []);
+        this.actionsUsed = new Set(d.actionsUsed || []);
+        this.lastUpdate = d.lastUpdate || Date.now();
+        if (this.pet && this.pet.alive) {
+          this.catchUp();
+          this.startGame();
+          return;
+        } else if (this.pet && !this.pet.alive) {
+          UI.goTo('welcome');
+          return;
+        }
+      } catch(e) { localStorage.removeItem('heroville_save'); }
+    }
+    UI.goTo('welcome');
+  },
+
+  catchUp() {
+    const elapsed = (Date.now() - this.lastUpdate) / 1000;
+    if (elapsed > 5) {
+      const hours = elapsed / 3600;
+      for (const k in this.pet.needs) {
+        const mod = this.pet.breedData?.mods?.[k] || 1;
+        this.pet.needs[k] = Math.max(0, this.pet.needs[k] - BASE_DECAY[k] * elapsed * mod);
+      }
+      if (this.pet.needs.hunger < 10 || this.pet.needs.thirst < 10) {
+        this.pet.needs.health = Math.max(0, this.pet.needs.health - hours * 3);
+      }
+      this.day += Math.floor(hours / 24);
+      if (this.pet.needs.health <= 0) {
+        this.pet.alive = false;
+      }
+      if (elapsed > 60) {
+        const earned = Math.floor(hours * 2);
+        this.coins += earned;
+        if (earned > 0) UI.toast('🪙', `Earned ${earned} coins while away`);
+      }
+    }
+    this.lastUpdate = Date.now();
+  },
+
+  setType(type) {
+    this.selectedType = type;
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    setTimeout(() => UI.goTo('choose-breed'), 300);
+    this.renderBreeds();
+  },
+
+  renderBreeds() {
+    const grid = document.getElementById('breed-grid');
+    grid.innerHTML = '';
+    BREEDS[this.selectedType].forEach(b => {
+      const card = document.createElement('div');
+      card.className = 'breed-card';
+      card.innerHTML = `<div class="swatch" style="background:${b.color}"></div><div class="bname">${b.name}</div><div class="trait">${b.trait}</div>`;
+      card.onclick = () => {
+        document.querySelectorAll('.breed-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        this.selectedBreed = b;
+        document.getElementById('btn-confirm-breed').disabled = false;
+      };
+      grid.appendChild(card);
+    });
+  },
+
+  confirmBreed() {
+    if (!this.selectedBreed) return;
+    document.getElementById('name-preview-emoji').textContent = this.selectedBreed.emoji;
+    document.getElementById('name-breed-label').textContent = this.selectedBreed.name;
+    UI.goTo('name-pet');
+    document.getElementById('pet-name-input').focus();
+  },
+
+  randomName() {
+    const names = NAMES[this.selectedType];
+    document.getElementById('pet-name-input').value = names[Math.floor(Math.random() * names.length)];
+  },
+
+  confirmName() {
+    const name = document.getElementById('pet-name-input').value.trim();
+    if (!name) { this.randomName(); return; }
+    this.pet = {
+      name,
+      type: this.selectedType,
+      breed: this.selectedBreed.id,
+      breedData: this.selectedBreed,
+      needs: {hunger:80,thirst:80,happiness:90,health:100,energy:100,clean:100},
+      alive: true,
+      adoptedAt: Date.now(),
+    };
+    this.coins = 100;
+    this.day = 1;
+    this.totalCoinsSpent = 0;
+    this.achievements = new Set();
+    this.actionsUsed = new Set();
+    this.cooldowns = {};
+    this.lastUpdate = Date.now();
+    this.save();
+    this.startGame();
+    UI.toast('🎉', `Welcome home, ${name}!`);
+  },
+
+  startGame() {
+    this.started = true;
+    UI.goTo('game');
+    document.getElementById('tab-bar').style.display = 'flex';
+    this.renderNeeds();
+    this.renderActions();
+    this.renderShop();
+    this.updateUI();
+    if (this.tickInterval) clearInterval(this.tickInterval);
+    if (this.saveInterval) clearInterval(this.saveInterval);
+    this.tickInterval = setInterval(() => this.tick(), 1000);
+    this.saveInterval = setInterval(() => this.save(), 10000);
+  },
+
+  tick() {
+    if (!this.pet || !this.pet.alive) return;
+    const now = Date.now();
+    const dt = (now - this.lastUpdate) / 1000 * this.speed;
+    this.lastUpdate = now;
+
+    for (const k in this.pet.needs) {
+      const mod = this.pet.breedData?.mods?.[k] || 1;
+      this.pet.needs[k] = Math.max(0, Math.min(100, this.pet.needs[k] - BASE_DECAY[k] * dt * mod));
+    }
+
+    if (this.pet.needs.hunger < 10 || this.pet.needs.thirst < 10) {
+      this.pet.needs.health = Math.max(0, this.pet.needs.health - 0.05 * dt);
+    }
+    if (this.pet.needs.happiness < 15) {
+      this.pet.needs.health = Math.max(0, this.pet.needs.health - 0.02 * dt);
+    }
+
+    // Energy slowly recovers if not doing anything
+    this.pet.needs.energy = Math.min(100, this.pet.needs.energy + 0.005 * dt);
+
+    // Passive income
+    const mood = this.getMood();
+    if (mood === 'happy' || mood === 'content') {
+      this.coins += 0.01 * dt;
+    }
+
+    // Day counter
+    const hoursSinceAdopt = (Date.now() - this.pet.adoptedAt) / (1000 * 3600) * this.speed;
+    this.day = Math.max(1, Math.floor(hoursSinceAdopt / 24) + 1);
+
+    // Cooldowns
+    for (const k in this.cooldowns) {
+      this.cooldowns[k] = Math.max(0, this.cooldowns[k] - dt);
+    }
+
+    // Warnings
+    this.checkWarnings();
+    this.checkAchievements();
+
+    // Death check
+    if (this.pet.needs.health <= 0) {
+      this.pet.alive = false;
+      this.save();
+      document.getElementById('death-emoji').textContent = this.pet.breedData.emoji;
+      document.getElementById('death-overlay').classList.add('active');
+      return;
+    }
+
+    this.updateUI();
+  },
+
+  _lastWarnings: {},
+  checkWarnings() {
+    const now = Date.now();
+    for (const n of NEEDS) {
+      const val = this.pet.needs[n.id];
+      if (val < 20 && (!this._lastWarnings[n.id] || now - this._lastWarnings[n.id] > 30000)) {
+        this._lastWarnings[n.id] = now;
+        const msgs = {
+          hunger: `${this.pet.name} is starving!`,
+          thirst: `${this.pet.name} is dehydrated!`,
+          happiness: `${this.pet.name} looks depressed...`,
+          health: `${this.pet.name} needs a vet NOW!`,
+          energy: `${this.pet.name} is exhausted.`,
+          clean: `${this.pet.name} really needs a bath.`,
+        };
+        UI.toast('⚠️', msgs[n.id]);
+      }
+    }
+  },
+
+  checkAchievements() {
+    if (!this.achievements.has('full_needs')) {
+      if (Object.values(this.pet.needs).every(v => v >= 90)) this.earn('full_needs');
+    }
+    if (!this.achievements.has('day_3') && this.day >= 3) this.earn('day_3');
+    if (!this.achievements.has('day_7') && this.day >= 7) this.earn('day_7');
+    if (!this.achievements.has('day_30') && this.day >= 30) this.earn('day_30');
+    if (!this.achievements.has('spend_100') && this.totalCoinsSpent >= 100) this.earn('spend_100');
+    if (!this.achievements.has('all_actions') && ACTIONS.every(a => this.actionsUsed.has(a.id))) this.earn('all_actions');
+    if (!this.achievements.has('close_call') && this.pet.needs.health > 10 && this.pet.needs.health < 15) {
+      const prev = this._prevHealth || 100;
+      if (prev <= 10) this.earn('close_call');
+    }
+    this._prevHealth = this.pet.needs.health;
+  },
+
+  earn(achId) {
+    if (this.achievements.has(achId)) return;
+    this.achievements.add(achId);
+    const ach = ACHIEVEMENTS.find(a => a.id === achId);
+    if (ach) {
+      UI.toast(ach.icon, `Achievement: ${ach.name}`);
+      this.coins += 10;
+    }
+    this.save();
+  },
+
+  getMood() {
+    if (!this.pet || !this.pet.alive) return 'dead';
+    const n = this.pet.needs;
+    if (n.health < 25) return 'sick';
+    if (n.energy < 10) return 'sleeping';
+    const avg = Object.values(n).reduce((a,b) => a+b, 0) / 6;
+    if (avg > 70) return 'happy';
+    if (avg > 45) return 'content';
+    return 'sad';
+  },
+
+  doAction(actionId) {
+    const action = ACTIONS.find(a => a.id === actionId);
+    if (!action || !this.pet?.alive) return;
+    if (this.cooldowns[actionId] > 0) return;
+    if (action.cost > Math.floor(this.coins)) { UI.toast('😿', 'Not enough coins!'); return; }
+    if (action.energyCost && this.pet.needs.energy < action.energyCost) { UI.toast('😴', `${this.pet.name} is too tired!`); return; }
+
+    this.coins -= action.cost;
+    this.totalCoinsSpent += action.cost;
+    this.cooldowns[actionId] = action.cooldown;
+    this.actionsUsed.add(actionId);
+
+    for (const k in action.needs) {
+      this.pet.needs[k] = Math.max(0, Math.min(100, this.pet.needs[k] + action.needs[k]));
+    }
+    if (action.energyCost) {
+      this.pet.needs.energy = Math.max(0, this.pet.needs.energy - action.energyCost);
+    }
+
+    if (!this.achievements.has('first_feed') && actionId === 'feed') this.earn('first_feed');
+
+    const particles = {feed:'🍖',water:'💧',walk:'🐾',play:'⭐',groom:'✨',vet:'💚'};
+    UI.spawnParticles(particles[actionId] || '❤️', 5);
+
+    const sprite = document.getElementById('pet-sprite');
+    sprite.className = 'pet-sprite';
+    if (actionId === 'feed' || actionId === 'water') sprite.classList.add('eating');
+    else if (actionId === 'play' || actionId === 'walk') sprite.classList.add('playing');
+    setTimeout(() => { this.updateUI(); }, 1500);
+
+    this.updateUI();
+    this.save();
+  },
+
+  buyItem(itemId) {
+    let item = null;
+    for (const cat of SHOP_ITEMS) {
+      item = cat.items.find(i => i.id === itemId);
+      if (item) break;
+    }
+    if (!item || !this.pet?.alive) return;
+    if (item.cost > Math.floor(this.coins)) { UI.toast('😿', 'Not enough coins!'); return; }
+    this.coins -= item.cost;
+    this.totalCoinsSpent += item.cost;
+    for (const k in item.effect) {
+      this.pet.needs[k] = Math.max(0, Math.min(100, this.pet.needs[k] + item.effect[k]));
+    }
+    UI.toast(item.icon, `Used ${item.name}`);
+    UI.spawnParticles(item.icon, 3);
+    this.updateUI();
+    this.save();
+  },
+
+  donate() {
+    if (Math.floor(this.coins) < 50) { UI.toast('😿', 'Need 50 coins to donate'); return; }
+    this.coins -= 50;
+    this.totalCoinsSpent += 50;
+    this.shelterDonationCoins += 50;
+    this.totalDonations++;
+    if (!this.achievements.has('donate_first')) this.earn('donate_first');
+    UI.toast('💝', 'Donated to animal shelters!');
+    this.pet.needs.happiness = Math.min(100, this.pet.needs.happiness + 15);
+    this.updateUI();
+    this.save();
+  },
+
+  toggleSpeed() {
+    this.speed = this.speed === 1 ? 5 : this.speed === 5 ? 20 : 1;
+    const btn = document.getElementById('speed-toggle');
+    btn.textContent = `${this.speed}× Speed`;
+    btn.classList.toggle('fast', this.speed > 1);
+  },
+
+  updateUI() {
+    if (!this.pet) return;
+    const mood = this.getMood();
+
+    document.getElementById('coin-count').textContent = Math.floor(this.coins);
+    document.getElementById('day-badge').textContent = `Day ${this.day}`;
+    document.getElementById('game-pet-name').textContent = this.pet.name;
+    document.getElementById('game-pet-breed').textContent = this.pet.breedData.name;
+
+    const moodTexts = {happy:'Happy & healthy! 😊',content:'Doing okay 🙂',sad:'Needs attention 😢',sick:'Feeling sick! 🤒',sleeping:'Exhausted 😴',dead:''};
+    document.getElementById('game-pet-mood').textContent = moodTexts[mood] || '';
+
+    const sprite = document.getElementById('pet-sprite');
+    const currentAnim = ['eating','playing'].find(c => sprite.classList.contains(c));
+    if (!currentAnim) {
+      sprite.className = 'pet-sprite ' + mood;
+    }
+    sprite.textContent = this.pet.breedData.emoji;
+
+    NEEDS.forEach(n => {
+      const val = this.pet.needs[n.id];
+      const bar = document.getElementById(`bar-${n.id}`);
+      const valEl = document.getElementById(`val-${n.id}`);
+      if (bar) {
+        bar.style.width = val + '%';
+        bar.style.background = val < 20 ? 'var(--danger)' : n.color;
+        bar.classList.toggle('critical', val < 15);
+      }
+      if (valEl) valEl.textContent = Math.round(val);
+    });
+
+    ACTIONS.forEach(a => {
+      const btn = document.getElementById(`act-${a.id}`);
+      if (!btn) return;
+      const cd = this.cooldowns[a.id] || 0;
+      const cdEl = btn.querySelector('.action-cooldown');
+      if (cd > 0) {
+        btn.classList.add('disabled');
+        if (!cdEl) {
+          const d = document.createElement('div');
+          d.className = 'action-cooldown';
+          d.textContent = Math.ceil(cd) + 's';
+          btn.appendChild(d);
+        } else {
+          cdEl.textContent = Math.ceil(cd) + 's';
+        }
+      } else {
+        btn.classList.remove('disabled');
+        if (cdEl) cdEl.remove();
+      }
+    });
+
+    document.getElementById('donation-amount').textContent = `$${(this.shelterDonationCoins * 0.01).toFixed(2)}`;
+
+    this.renderStats();
+  },
+
+  renderNeeds() {
+    const c = document.getElementById('needs-container');
+    c.innerHTML = NEEDS.map(n => `
+      <div class="need-row">
+        <div class="need-icon">${n.icon}</div>
+        <div class="need-bar-bg"><div class="need-bar" id="bar-${n.id}" style="width:100%;background:${n.color}"></div></div>
+        <div class="need-val" id="val-${n.id}">100</div>
+      </div>
+    `).join('');
+  },
+
+  renderActions() {
+    const c = document.getElementById('actions-container');
+    c.innerHTML = ACTIONS.map(a => `
+      <button class="action-btn" id="act-${a.id}" onclick="Game.doAction('${a.id}')">
+        <span class="act-icon">${a.icon}</span>
+        <span class="act-label">${a.label}</span>
+        ${a.cost > 0 ? `<span class="act-cost">${a.cost} coins</span>` : '<span class="act-cost">Free</span>'}
+      </button>
+    `).join('');
+  },
+
+  renderShop() {
+    const c = document.getElementById('shop-content');
+    c.innerHTML = SHOP_ITEMS.map(cat => `
+      <div class="shop-cat">
+        <h3>${cat.cat}</h3>
+        <div class="shop-items">
+          ${cat.items.map(item => `
+            <div class="shop-item">
+              <div class="si-icon">${item.icon}</div>
+              <div class="si-info">
+                <div class="si-name">${item.name}</div>
+                <div class="si-desc">${item.desc}</div>
+                <div class="si-effect">${item.effectLabel}</div>
+              </div>
+              <button class="shop-buy" onclick="Game.buyItem('${item.id}')">${item.cost} 🪙</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  },
+
+  renderStats() {
+    const sg = document.getElementById('stat-grid');
+    if (!sg || !this.pet) return;
+    const hoursTogether = ((Date.now() - this.pet.adoptedAt) / (1000*3600)).toFixed(1);
+    sg.innerHTML = `
+      <div class="stat-card"><div class="sv">${this.day}</div><div class="sl">Days Together</div></div>
+      <div class="stat-card"><div class="sv">${hoursTogether}h</div><div class="sl">Time Played</div></div>
+      <div class="stat-card"><div class="sv">${this.totalCoinsSpent}</div><div class="sl">Coins Spent</div></div>
+      <div class="stat-card"><div class="sv">${this.totalDonations}</div><div class="sl">Shelter Donations</div></div>
+    `;
+    const ag = document.getElementById('ach-grid');
+    if (!ag) return;
+    ag.innerHTML = ACHIEVEMENTS.map(a => `
+      <div class="ach-item ${this.achievements.has(a.id) ? 'earned' : ''}">
+        <div class="ach-icon">${a.icon}</div>
+        <div class="ach-info">
+          <div class="ach-name">${a.name}</div>
+          <div class="ach-desc">${a.desc}</div>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  save() {
+    const d = {
+      pet: this.pet,
+      coins: this.coins,
+      day: this.day,
+      totalCoinsSpent: this.totalCoinsSpent,
+      totalDonations: this.totalDonations,
+      shelterDonationCoins: this.shelterDonationCoins,
+      achievements: [...this.achievements],
+      actionsUsed: [...this.actionsUsed],
+      lastUpdate: Date.now(),
+    };
+    localStorage.setItem('heroville_save', JSON.stringify(d));
+  },
+
+  restart() {
+    localStorage.removeItem('heroville_save');
+    document.getElementById('death-overlay').classList.remove('active');
+    document.getElementById('tab-bar').style.display = 'none';
+    this.pet = null;
+    this.started = false;
+    this.selectedType = null;
+    this.selectedBreed = null;
+    if (this.tickInterval) clearInterval(this.tickInterval);
+    if (this.saveInterval) clearInterval(this.saveInterval);
+    UI.goTo('welcome');
+  },
+};
+
+const UI = {
+  currentScreen: null,
+
+  goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById('screen-' + screenId);
+    if (screen) {
+      screen.classList.add('active');
+      this.currentScreen = screenId;
+    }
+  },
+
+  switchTab(tabId) {
+    if (!Game.started && tabId !== 'shelter') return;
+    const tabScreenMap = {game:'game',shop:'shop',stats:'stats',shelter:'shelter'};
+    this.goTo(tabScreenMap[tabId]);
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.currentTarget?.classList.add('active');
+    if (tabId === 'stats') Game.renderStats();
+  },
+
+  toast(icon, message) {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  },
+
+  spawnParticles(emoji, count) {
+    const c = document.getElementById('particles');
+    if (!c) return;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = emoji;
+      p.style.left = (20 + Math.random() * 60) + '%';
+      p.style.top = (20 + Math.random() * 40) + '%';
+      p.style.animationDelay = (i * 0.2) + 's';
+      c.appendChild(p);
+      setTimeout(() => p.remove(), 2000);
+    }
+  },
+};
+
+function haptic(style) {
+  if (!navigator.vibrate) return;
+  if (style === 'light') navigator.vibrate(10);
+  else if (style === 'medium') navigator.vibrate(20);
+  else if (style === 'heavy') navigator.vibrate([30,10,30]);
+  else if (style === 'success') navigator.vibrate([10,30,10]);
+}
+
+const TAB_ORDER = ['game','shop','stats','shelter'];
+let touchStartX = 0, touchStartY = 0, swiping = false;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  swiping = false;
+}, {passive:true});
+document.addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - touchStartX;
+  const dy = e.touches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 40) swiping = true;
+}, {passive:true});
+document.addEventListener('touchend', e => {
+  if (!swiping || !Game.started) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) < 60) return;
+  const curIdx = TAB_ORDER.indexOf(UI.currentScreen);
+  if (curIdx === -1) return;
+  const nextIdx = dx < 0 ? Math.min(curIdx+1, TAB_ORDER.length-1) : Math.max(curIdx-1, 0);
+  if (nextIdx !== curIdx) {
+    haptic('light');
+    const tab = document.querySelectorAll('.tab')[nextIdx];
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    UI.goTo(TAB_ORDER[nextIdx]);
+  }
+});
+
+document.getElementById('pet-sprite')?.closest('.pet-scene')?.addEventListener('click', () => {
+  if (!Game.pet?.alive) return;
+  haptic('light');
+  Game.pet.needs.happiness = Math.min(100, Game.pet.needs.happiness + 3);
+  UI.spawnParticles('❤️', 3);
+  Game.updateUI();
+});
+
+const origDoAction = Game.doAction.bind(Game);
+Game.doAction = function(id) {
+  const before = this.pet?.needs?.health;
+  origDoAction(id);
+  if (this.pet?.alive && this.cooldowns[id] > 0) haptic('medium');
+};
+const origBuyItem = Game.buyItem.bind(Game);
+Game.buyItem = function(id) {
+  origBuyItem(id);
+  haptic('success');
+};
+const origDonate = Game.donate.bind(Game);
+Game.donate = function() {
+  origDonate();
+  haptic('success');
+};
+
+document.addEventListener('DOMContentLoaded', () => Game.init());
+document.getElementById('pet-name-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') Game.confirmName();
+});
+</script>
+</body>
+</html>
