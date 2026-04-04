@@ -222,6 +222,33 @@ input{font-family:inherit;font-size:16px}
 .death-overlay p{color:rgba(255,255,255,.7);margin-bottom:24px;line-height:1.5}
 .death-overlay .death-emoji{font-size:5rem;filter:grayscale(1);opacity:.6}
 
+/* Sleep animation */
+.pet-sprite.sleeping-action{animation:petSleepDeep 2s ease infinite;opacity:.7}
+@keyframes petSleepDeep{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.04) translateY(4px)}}
+
+/* Walk simulation */
+.walk-overlay{position:fixed;inset:0;z-index:150;display:none;flex-direction:column;overflow:hidden}
+.walk-overlay.active{display:flex;animation:fadeIn .5s ease}
+.walk-sky{flex:1;background:linear-gradient(180deg,#87CEEB 0%,#B0E0FF 60%,#E8F5E9 100%);position:relative;min-height:40%}
+.walk-sun{position:absolute;top:8%;right:12%;font-size:3rem;animation:sunGlow 3s ease infinite}
+@keyframes sunGlow{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.2);transform:scale(1.05)}}
+.walk-clouds{position:absolute;inset:0}
+.cloud{position:absolute;animation:cloudDrift linear infinite}
+@keyframes cloudDrift{0%{transform:translateX(0)}100%{transform:translateX(-120vw)}}
+.walk-ground{position:relative;height:35%;background:linear-gradient(180deg,#7CB342 0%,#558B2F 30%,#6D4C41 80%,#5D4037 100%);overflow:hidden}
+.walk-path{position:absolute;top:20%;left:0;right:0;height:40px;background:repeating-linear-gradient(90deg,#BCAAA4 0px,#BCAAA4 30px,#A1887F 30px,#A1887F 32px);opacity:.6}
+.walk-scenery{position:absolute;top:-20px;left:0;width:200%;height:60px;display:flex;align-items:flex-end;gap:20%}
+.scenery-item{font-size:2.8rem;animation:sceneryScroll linear infinite;position:absolute}
+@keyframes sceneryScroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100vw)}}
+.walk-paw-prints{position:absolute;bottom:8px;left:30%;display:flex;gap:24px}
+.paw-print{font-size:1.1rem;opacity:0;animation:pawAppear 1.2s ease infinite}
+@keyframes pawAppear{0%{opacity:0;transform:scale(.5)}30%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1) translateX(-20px)}}
+.walk-pet{position:absolute;bottom:28%;left:28%;font-size:5rem;animation:walkBounce .5s ease infinite;z-index:5;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+@keyframes walkBounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+.walk-status{position:absolute;top:max(40px,calc(10px + var(--safe-top)));left:50%;transform:translateX(-50%);background:rgba(255,255,255,.9);padding:10px 24px;border-radius:30px;font-size:1rem;font-weight:600;color:var(--text);box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:10;white-space:nowrap}
+.walk-progress-bar{position:absolute;bottom:max(24px,calc(8px + var(--safe-bottom)));left:50%;transform:translateX(-50%);width:60%;height:8px;background:rgba(255,255,255,.4);border-radius:4px;z-index:10;overflow:hidden}
+.walk-progress-fill{height:100%;background:#fff;border-radius:4px;width:0%;transition:width .3s linear}
+
 /* Small phones (SE, Mini) */
 @media(max-width:380px){
   .type-cards{flex-direction:column;gap:14px}
@@ -306,7 +333,7 @@ input{font-family:inherit;font-size:16px}
 <!-- Main Game -->
 <div class="screen game" id="screen-game">
   <div class="game-header">
-    <div class="coins"><div class="coin-icon">$</div><span id="coin-count">100</span></div>
+    <div class="coins"><div class="coin-icon">$</div><span id="coin-count">1000</span></div>
     <div class="day-badge" id="day-badge">Day 1</div>
     <button class="speed-toggle" id="speed-toggle" onclick="Game.toggleSpeed()">1× Speed</button>
   </div>
@@ -389,6 +416,39 @@ input{font-family:inherit;font-size:16px}
 <!-- Toast container -->
 <div class="toast-container" id="toast-container"></div>
 
+<!-- Walk simulation overlay -->
+<div class="walk-overlay" id="walk-overlay">
+  <div class="walk-sky">
+    <div class="walk-clouds">
+      <div class="cloud" style="top:12%;left:10%;font-size:2.5rem;animation-duration:8s">☁️</div>
+      <div class="cloud" style="top:6%;left:55%;font-size:3rem;animation-duration:12s;animation-delay:-4s">☁️</div>
+      <div class="cloud" style="top:18%;left:80%;font-size:2rem;animation-duration:10s;animation-delay:-7s">☁️</div>
+    </div>
+    <div class="walk-sun">☀️</div>
+  </div>
+  <div class="walk-ground">
+    <div class="walk-path"></div>
+    <div class="walk-scenery">
+      <div class="scenery-item" style="animation-duration:4s">🌳</div>
+      <div class="scenery-item" style="animation-duration:4s;animation-delay:-1s">🌸</div>
+      <div class="scenery-item" style="animation-duration:4s;animation-delay:-2s">🌳</div>
+      <div class="scenery-item" style="animation-duration:4s;animation-delay:-2.8s">🏠</div>
+      <div class="scenery-item" style="animation-duration:4s;animation-delay:-0.5s">🌻</div>
+      <div class="scenery-item" style="animation-duration:4s;animation-delay:-1.6s">⛲</div>
+      <div class="scenery-item" style="animation-duration:4s;animation-delay:-3.3s">🌲</div>
+    </div>
+    <div class="walk-paw-prints">
+      <span class="paw-print" style="animation-delay:0s">🐾</span>
+      <span class="paw-print" style="animation-delay:.3s">🐾</span>
+      <span class="paw-print" style="animation-delay:.6s">🐾</span>
+      <span class="paw-print" style="animation-delay:.9s">🐾</span>
+    </div>
+  </div>
+  <div class="walk-pet" id="walk-pet-sprite"></div>
+  <div class="walk-status" id="walk-status">Going for a walk...</div>
+  <div class="walk-progress-bar"><div class="walk-progress-fill" id="walk-progress"></div></div>
+</div>
+
 <!-- Death overlay -->
 <div class="death-overlay" id="death-overlay">
   <div class="death-emoji" id="death-emoji"></div>
@@ -443,6 +503,7 @@ const ACTIONS = [
   {id:'play',label:'Play',icon:'🎾',cost:0,cooldown:5,needs:{happiness:25},energyCost:20},
   {id:'groom',label:'Groom',icon:'🛁',cost:3,cooldown:6,needs:{clean:40,happiness:5},energyCost:5},
   {id:'vet',label:'Vet',icon:'🩺',cost:20,cooldown:30,needs:{health:40},energyCost:10},
+  {id:'sleep',label:'Sleep',icon:'😴',cost:0,cooldown:15,needs:{energy:40,health:3},energyCost:0},
 ];
 
 const SHOP_ITEMS = [
@@ -479,7 +540,7 @@ const BASE_DECAY = {hunger:0.045,thirst:0.065,happiness:0.03,health:0.008,energy
 
 const Game = {
   pet: null,
-  coins: 100,
+  coins: 1000,
   day: 1,
   totalCoinsSpent: 0,
   totalDonations: 0,
@@ -502,7 +563,7 @@ const Game = {
       try {
         const d = JSON.parse(saved);
         this.pet = d.pet;
-        this.coins = d.coins || 100;
+        this.coins = d.coins || 1000;
         this.day = d.day || 1;
         this.totalCoinsSpent = d.totalCoinsSpent || 0;
         this.totalDonations = d.totalDonations || 0;
@@ -597,7 +658,7 @@ const Game = {
       alive: true,
       adoptedAt: Date.now(),
     };
-    this.coins = 100;
+    this.coins = 1000;
     this.day = 1;
     this.totalCoinsSpent = 0;
     this.achievements = new Set();
@@ -754,14 +815,19 @@ const Game = {
 
     if (!this.achievements.has('first_feed') && actionId === 'feed') this.earn('first_feed');
 
-    const particles = {feed:'🍖',water:'💧',walk:'🐾',play:'⭐',groom:'✨',vet:'💚'};
+    const particles = {feed:'🍖',water:'💧',walk:'🐾',play:'⭐',groom:'✨',vet:'💚',sleep:'💤'};
     UI.spawnParticles(particles[actionId] || '❤️', 5);
 
-    const sprite = document.getElementById('pet-sprite');
-    sprite.className = 'pet-sprite';
-    if (actionId === 'feed' || actionId === 'water') sprite.classList.add('eating');
-    else if (actionId === 'play' || actionId === 'walk') sprite.classList.add('playing');
-    setTimeout(() => { this.updateUI(); }, 1500);
+    if (actionId === 'walk') {
+      UI.startWalkScene(this.pet.breedData.emoji, this.pet.name);
+    } else {
+      const sprite = document.getElementById('pet-sprite');
+      sprite.className = 'pet-sprite';
+      if (actionId === 'feed' || actionId === 'water') sprite.classList.add('eating');
+      else if (actionId === 'play') sprite.classList.add('playing');
+      else if (actionId === 'sleep') sprite.classList.add('sleeping-action');
+      setTimeout(() => { this.updateUI(); }, 1500);
+    }
 
     this.updateUI();
     this.save();
@@ -987,6 +1053,57 @@ const UI = {
     t.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
     c.appendChild(t);
     setTimeout(() => t.remove(), 3500);
+  },
+
+  startWalkScene(emoji, name) {
+    const overlay = document.getElementById('walk-overlay');
+    const petSprite = document.getElementById('walk-pet-sprite');
+    const status = document.getElementById('walk-status');
+    const progress = document.getElementById('walk-progress');
+    petSprite.textContent = emoji;
+    overlay.classList.add('active');
+    haptic('medium');
+
+    const messages = [
+      `${name} is sniffing around...`,
+      `${name} found a stick!`,
+      `${name} is trotting happily`,
+      `${name} spotted a squirrel!`,
+      `${name} is loving this walk`,
+      `${name} made a friend!`,
+      `Heading home now...`,
+    ];
+    let msgIdx = 0;
+    status.textContent = `Taking ${name} for a walk...`;
+    const duration = 6000;
+    const msgInterval = setInterval(() => {
+      msgIdx++;
+      if (msgIdx < messages.length) {
+        status.textContent = messages[msgIdx];
+        haptic('light');
+      }
+    }, duration / messages.length);
+
+    let start = null;
+    const animateProgress = (ts) => {
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      const pct = Math.min(100, (elapsed / duration) * 100);
+      progress.style.width = pct + '%';
+      if (elapsed < duration) {
+        requestAnimationFrame(animateProgress);
+      } else {
+        clearInterval(msgInterval);
+        status.textContent = `Great walk, ${name}!`;
+        haptic('success');
+        setTimeout(() => {
+          overlay.classList.remove('active');
+          progress.style.width = '0%';
+          Game.updateUI();
+        }, 1200);
+      }
+    };
+    requestAnimationFrame(animateProgress);
   },
 
   spawnParticles(emoji, count) {
