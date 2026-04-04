@@ -41,8 +41,39 @@ input{font-family:inherit;font-size:16px}
 .hero-caption{font-size:.85rem;font-weight:600;color:#334155;margin-bottom:10px}
 .hero-caption span{background:linear-gradient(135deg,#7C3AED,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .welcome .btn-primary{background:linear-gradient(135deg,#7C3AED,#6366F1);box-shadow:0 4px 16px rgba(124,58,246,.3);padding:16px 44px;font-size:1.05rem}
-.tap-hint{font-size:.72rem;color:#94A3B8;margin-top:8px;animation:tapPulse 2s ease-in-out infinite;letter-spacing:.5px}
-@keyframes tapPulse{0%,100%{opacity:.5}50%{opacity:1}}
+.tap-begin{font-size:1rem;font-weight:600;color:#7C3AED;margin-top:14px;animation:tapPulse 2s ease-in-out infinite;letter-spacing:.5px}
+@keyframes tapPulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* Intro trailer */
+.intro-overlay{display:none;position:fixed;inset:0;z-index:999;background:linear-gradient(160deg,#0F0A2A 0%,#1A1145 50%,#0D1B3E 100%);flex-direction:column;align-items:center;justify-content:center;padding:24px;color:#fff;font-family:inherit}
+.intro-overlay.active{display:flex}
+.intro-scene{position:relative;width:100%;max-width:400px;height:300px}
+.intro-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;opacity:0;transform:scale(.95);transition:opacity .6s,transform .6s;pointer-events:none}
+.intro-slide.active{opacity:1;transform:scale(1);pointer-events:auto}
+.intro-visual{display:flex;align-items:center;justify-content:center;gap:12px;font-size:4rem;min-height:120px;position:relative}
+.intro-icons-row{gap:20px}
+.intro-icon{font-size:3rem;animation:iconBounce .6s ease-out both}
+.intro-icon:nth-child(1){animation-delay:.1s}.intro-icon:nth-child(2){animation-delay:.25s}.intro-icon:nth-child(3){animation-delay:.4s}.intro-icon:nth-child(4){animation-delay:.55s}
+@keyframes iconBounce{0%{opacity:0;transform:translateY(20px) scale(.5)}60%{transform:translateY(-8px) scale(1.1)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.intro-shelter{font-size:5rem;opacity:.7}
+.intro-home{font-size:5rem}
+.intro-dog{font-size:3.5rem}
+.intro-dog-sad{animation:dogSad 2s ease-in-out infinite;filter:grayscale(.5)}
+@keyframes dogSad{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+.intro-dog-walk{animation:dogWalk 1s ease-in-out infinite}
+@keyframes dogWalk{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
+.intro-dog-happy{animation:dogJump 1s ease-in-out infinite}
+@keyframes dogJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.intro-hearts{font-size:1.8rem;animation:heartsFloat 2s ease-in-out infinite}
+@keyframes heartsFloat{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(-12px);opacity:1}}
+.intro-warning{font-size:5rem;animation:warnPulse 1.2s ease-in-out infinite}
+@keyframes warnPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.intro-text{font-size:1.1rem;color:rgba(255,255,255,.9);text-align:center;line-height:1.5;max-width:300px}
+.intro-text b{color:#A78BFA}
+.intro-progress{width:60%;max-width:240px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;margin-top:32px;overflow:hidden}
+.intro-progress-fill{width:0;height:100%;background:linear-gradient(90deg,#7C3AED,#3B82F6);border-radius:4px;transition:width .3s ease}
+.intro-skip{color:rgba(255,255,255,.4);font-size:.8rem;margin-top:16px;cursor:pointer;transition:color .2s}
+.intro-skip:active{color:rgba(255,255,255,.8)}
 .welcome .shelter-note{font-size:.75rem;color:#059669;margin-top:auto;padding:8px 16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.15);border-radius:10px;font-weight:500}
 @media(hover:hover){.welcome .btn-primary:hover{background:linear-gradient(135deg,#6D28D9,#4F46E5);box-shadow:0 6px 24px rgba(124,58,246,.4);transform:translateY(-2px)}}
 @keyframes heroWag{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
@@ -347,7 +378,7 @@ input{font-family:inherit;font-size:16px}
 </head>
 <body>
 
-<div class="screen welcome" id="screen-welcome" onclick="if(event.target.closest('.shelter-note'))return;UI.goTo('choose-type')">
+<div class="screen welcome" id="screen-welcome" onclick="if(event.target.closest('.shelter-note'))return;Intro.start()">
   <h1>Heroville</h1>
   <p class="tagline">Adopt. Care. Love.</p>
   <div class="hero-mascot-wrap" id="hero-mascot-wrap">
@@ -401,9 +432,63 @@ input{font-family:inherit;font-size:16px}
   </div>
   <span id="hero-mascot" style="display:none" data-src="data:image/jpeg;base64,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" alt="Hero — Patterdale Terrier">
   <div class="hero-caption">Meet <span>Hero</span> — our mascot & inspiration</div>
-  <button class="btn btn-primary" onclick="UI.goTo('choose-type')">Adopt a Pet</button>
-  <p class="tap-hint">tap anywhere to start</p>
+  <p class="tap-begin">Tap to Begin</p>
   <p class="shelter-note">A portion of all proceeds supports real animal shelters</p>
+</div>
+
+<div id="intro-overlay" class="intro-overlay">
+  <div class="intro-scene" id="intro-scene">
+    <div class="intro-slide" data-slide="0">
+      <div class="intro-visual">
+        <div class="intro-shelter">🏚️</div>
+        <div class="intro-dog intro-dog-sad">🐾</div>
+      </div>
+      <p class="intro-text">Somewhere, a dog waits alone...</p>
+    </div>
+    <div class="intro-slide" data-slide="1">
+      <div class="intro-visual">
+        <div class="intro-dog intro-dog-walk">🐕</div>
+        <div class="intro-hearts">💕</div>
+      </div>
+      <p class="intro-text">Until someone like you comes along.</p>
+    </div>
+    <div class="intro-slide" data-slide="2">
+      <div class="intro-visual intro-icons-row">
+        <span class="intro-icon">🍖</span>
+        <span class="intro-icon">💧</span>
+        <span class="intro-icon">🦴</span>
+        <span class="intro-icon">🏥</span>
+      </div>
+      <p class="intro-text"><b>Feed</b>, <b>water</b>, <b>play</b> & <b>visit the vet</b> — just like a real pet.</p>
+    </div>
+    <div class="intro-slide" data-slide="3">
+      <div class="intro-visual intro-icons-row">
+        <span class="intro-icon">🏞️</span>
+        <span class="intro-icon">😴</span>
+        <span class="intro-icon">🛁</span>
+        <span class="intro-icon">🐾</span>
+      </div>
+      <p class="intro-text">Take them to the <b>dog park</b>, let them <b>sleep</b>, keep them <b>clean</b>.</p>
+    </div>
+    <div class="intro-slide" data-slide="4">
+      <div class="intro-visual">
+        <div class="intro-warning">⚠️</div>
+      </div>
+      <p class="intro-text">But be careful — <b>neglect</b> them and they'll get sick... or worse.</p>
+    </div>
+    <div class="intro-slide" data-slide="5">
+      <div class="intro-visual">
+        <div class="intro-home">🏠</div>
+        <div class="intro-dog intro-dog-happy">🐕</div>
+        <div class="intro-hearts">❤️✨❤️</div>
+      </div>
+      <p class="intro-text">Give them a <b>forever home</b>. Your love saves real lives.</p>
+    </div>
+  </div>
+  <div class="intro-progress">
+    <div class="intro-progress-fill" id="intro-progress-fill"></div>
+  </div>
+  <p class="intro-skip" onclick="Intro.skip()">skip ›</p>
 </div>
 
 <div class="screen choose-type" id="screen-choose-type">
@@ -1059,6 +1144,43 @@ const Game={
   },
 
   restart(){localStorage.removeItem('heroville_save2');document.getElementById('death-overlay').classList.remove('active');document.getElementById('tab-bar').style.display='none';this.pets=[];this.started=false;this.selectedType=null;this.selectedBreed=null;if(this.tickInterval)clearInterval(this.tickInterval);if(this.saveInterval)clearInterval(this.saveInterval);this.coins=1000;UI.goTo('welcome')},
+};
+
+const Intro={
+  totalSlides:6,
+  current:0,
+  timer:null,
+  SLIDE_MS:3200,
+  seen(){return localStorage.getItem('heroville_intro_seen')==='1'},
+  markSeen(){localStorage.setItem('heroville_intro_seen','1')},
+  start(){
+    if(this.seen()){UI.goTo('choose-type');return}
+    this.current=0;
+    const overlay=document.getElementById('intro-overlay');
+    overlay.classList.add('active');
+    this.showSlide(0);
+    this.timer=setInterval(()=>{
+      this.current++;
+      if(this.current>=this.totalSlides){this.finish();return}
+      this.showSlide(this.current);
+    },this.SLIDE_MS);
+  },
+  showSlide(i){
+    document.querySelectorAll('.intro-slide').forEach(s=>s.classList.remove('active'));
+    const slide=document.querySelector(`.intro-slide[data-slide="${i}"]`);
+    if(slide)slide.classList.add('active');
+    const fill=document.getElementById('intro-progress-fill');
+    fill.style.width=((i+1)/this.totalSlides*100)+'%';
+  },
+  skip(){this.finish()},
+  finish(){
+    clearInterval(this.timer);
+    this.markSeen();
+    const overlay=document.getElementById('intro-overlay');
+    overlay.style.transition='opacity .5s';
+    overlay.style.opacity='0';
+    setTimeout(()=>{overlay.classList.remove('active');overlay.style.opacity='';overlay.style.transition='';UI.goTo('choose-type')},500);
+  }
 };
 
 const Pedometer={
