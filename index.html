@@ -234,20 +234,37 @@ input{font-family:inherit;font-size:16px}
 @keyframes sunGlow{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.2);transform:scale(1.05)}}
 .walk-clouds{position:absolute;inset:0}
 .cloud{position:absolute;animation:cloudDrift linear infinite}
-@keyframes cloudDrift{0%{transform:translateX(0)}100%{transform:translateX(-120vw)}}
+@keyframes cloudDrift{0%{transform:translateX(0)}100%{transform:translateX(120vw)}}
 .walk-ground{position:relative;height:35%;background:linear-gradient(180deg,#7CB342 0%,#558B2F 30%,#6D4C41 80%,#5D4037 100%);overflow:hidden}
 .walk-path{position:absolute;top:20%;left:0;right:0;height:40px;background:repeating-linear-gradient(90deg,#BCAAA4 0px,#BCAAA4 30px,#A1887F 30px,#A1887F 32px);opacity:.6}
 .walk-scenery{position:absolute;top:-20px;left:0;width:200%;height:60px;display:flex;align-items:flex-end;gap:20%}
 .scenery-item{font-size:2.8rem;animation:sceneryScroll linear infinite;position:absolute}
-@keyframes sceneryScroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100vw)}}
+@keyframes sceneryScroll{0%{transform:translateX(-100vw)}100%{transform:translateX(100vw)}}
 .walk-paw-prints{position:absolute;bottom:8px;left:30%;display:flex;gap:24px}
 .paw-print{font-size:1.1rem;opacity:0;animation:pawAppear 1.2s ease infinite}
-@keyframes pawAppear{0%{opacity:0;transform:scale(.5)}30%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1) translateX(-20px)}}
+@keyframes pawAppear{0%{opacity:0;transform:scale(.5)}30%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1) translateX(20px)}}
 .walk-pet{position:absolute;bottom:28%;left:28%;font-size:5rem;animation:walkBounce .5s ease infinite;z-index:5;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
 @keyframes walkBounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
 .walk-status{position:absolute;top:max(40px,calc(10px + var(--safe-top)));left:50%;transform:translateX(-50%);background:rgba(255,255,255,.9);padding:10px 24px;border-radius:30px;font-size:1rem;font-weight:600;color:var(--text);box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:10;white-space:nowrap}
 .walk-progress-bar{position:absolute;bottom:max(24px,calc(8px + var(--safe-bottom)));left:50%;transform:translateX(-50%);width:60%;height:8px;background:rgba(255,255,255,.4);border-radius:4px;z-index:10;overflow:hidden}
 .walk-progress-fill{height:100%;background:#fff;border-radius:4px;width:0%;transition:width .3s linear}
+
+/* Dog Park simulation */
+.park-overlay{position:fixed;inset:0;z-index:150;display:none;flex-direction:column;overflow:hidden}
+.park-overlay.active{display:flex;animation:fadeIn .5s ease}
+.park-sky{flex:1;background:linear-gradient(180deg,#64B5F6 0%,#90CAF9 50%,#C8E6C9 100%);position:relative;min-height:35%}
+.park-ground{position:relative;height:40%;background:linear-gradient(180deg,#66BB6A 0%,#4CAF50 20%,#388E3C 60%,#2E7D32 100%);overflow:hidden}
+.park-fence{position:absolute;top:0;left:0;right:0;height:24px;background:repeating-linear-gradient(90deg,transparent 0px,transparent 28px,#795548 28px,#795548 32px);border-bottom:4px solid #5D4037}
+.park-animals{position:absolute;inset:0}
+.park-animal{position:absolute;font-size:2.2rem;top:var(--y);animation:parkRun 3.5s ease-in-out infinite;animation-delay:var(--delay)}
+@keyframes parkRun{0%{left:-10%;transform:scaleX(1)}45%{left:110%;transform:scaleX(1)}46%{left:110%;transform:scaleX(-1)}90%{left:-10%;transform:scaleX(-1)}91%{left:-10%;transform:scaleX(1)}100%{left:-10%;transform:scaleX(1)}}
+.park-items{position:absolute;inset:0}
+.park-item{position:absolute;font-size:2.5rem}
+.park-pet{position:absolute;bottom:30%;left:50%;transform:translateX(-50%);font-size:5rem;z-index:5;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));animation:parkPlay .6s ease infinite}
+@keyframes parkPlay{0%,100%{transform:translateX(-50%) translateY(0) rotate(0)}25%{transform:translateX(-30%) translateY(-18px) rotate(-8deg)}50%{transform:translateX(-50%) translateY(0) rotate(0)}75%{transform:translateX(-70%) translateY(-14px) rotate(8deg)}}
+.park-ball{position:absolute;bottom:42%;left:35%;font-size:2rem;z-index:6;animation:ballBounce 1.2s ease infinite;display:none}
+.park-ball.active{display:block}
+@keyframes ballBounce{0%{transform:translate(0,0)}25%{transform:translate(30px,-40px)}50%{transform:translate(60px,0)}75%{transform:translate(30px,-20px)}100%{transform:translate(0,0)}}
 
 /* Small phones (SE, Mini) */
 @media(max-width:380px){
@@ -449,6 +466,35 @@ input{font-family:inherit;font-size:16px}
   <div class="walk-progress-bar"><div class="walk-progress-fill" id="walk-progress"></div></div>
 </div>
 
+<!-- Dog Park simulation overlay -->
+<div class="park-overlay" id="park-overlay">
+  <div class="park-sky">
+    <div class="walk-sun" style="right:15%;top:10%">☀️</div>
+    <div class="cloud" style="top:8%;left:5%;font-size:2rem;animation:cloudDrift 10s linear infinite">☁️</div>
+    <div class="cloud" style="top:14%;left:60%;font-size:2.5rem;animation:cloudDrift 14s linear infinite;animation-delay:-6s">☁️</div>
+  </div>
+  <div class="park-ground">
+    <div class="park-fence"></div>
+    <div class="park-animals">
+      <span class="park-animal" style="--delay:0s;--y:30%">🐕</span>
+      <span class="park-animal" style="--delay:-1.5s;--y:55%">🐩</span>
+      <span class="park-animal" style="--delay:-3s;--y:20%">🐶</span>
+      <span class="park-animal" style="--delay:-4.2s;--y:65%">🐈</span>
+      <span class="park-animal" style="--delay:-2.3s;--y:40%">🦮</span>
+    </div>
+    <div class="park-items">
+      <span class="park-item" style="bottom:15%;left:20%">🌳</span>
+      <span class="park-item" style="bottom:10%;left:70%">🌳</span>
+      <span class="park-item" style="bottom:5%;left:45%">🪵</span>
+      <span class="park-item" style="bottom:20%;left:85%">⛲</span>
+    </div>
+  </div>
+  <div class="park-pet" id="park-pet-sprite"></div>
+  <div class="park-ball" id="park-ball">🎾</div>
+  <div class="walk-status" id="park-status">Arriving at the dog park...</div>
+  <div class="walk-progress-bar"><div class="walk-progress-fill" id="park-progress"></div></div>
+</div>
+
 <!-- Death overlay -->
 <div class="death-overlay" id="death-overlay">
   <div class="death-emoji" id="death-emoji"></div>
@@ -504,6 +550,7 @@ const ACTIONS = [
   {id:'groom',label:'Groom',icon:'🛁',cost:3,cooldown:6,needs:{clean:40,happiness:5},energyCost:5},
   {id:'vet',label:'Vet',icon:'🩺',cost:20,cooldown:30,needs:{health:40},energyCost:10},
   {id:'sleep',label:'Sleep',icon:'😴',cost:0,cooldown:15,needs:{energy:40,health:3},energyCost:0},
+  {id:'dogpark',label:'Dog Park',icon:'🏞️',cost:10,cooldown:20,needs:{happiness:45,hunger:-15,clean:-25},energyCost:40},
 ];
 
 const SHOP_ITEMS = [
@@ -815,11 +862,13 @@ const Game = {
 
     if (!this.achievements.has('first_feed') && actionId === 'feed') this.earn('first_feed');
 
-    const particles = {feed:'🍖',water:'💧',walk:'🐾',play:'⭐',groom:'✨',vet:'💚',sleep:'💤'};
+    const particles = {feed:'🍖',water:'💧',walk:'🐾',play:'⭐',groom:'✨',vet:'💚',sleep:'💤',dogpark:'🎾'};
     UI.spawnParticles(particles[actionId] || '❤️', 5);
 
     if (actionId === 'walk') {
       UI.startWalkScene(this.pet.breedData.emoji, this.pet.name);
+    } else if (actionId === 'dogpark') {
+      UI.startParkScene(this.pet.breedData.emoji, this.pet.name);
     } else {
       const sprite = document.getElementById('pet-sprite');
       sprite.className = 'pet-sprite';
@@ -1053,6 +1102,66 @@ const UI = {
     t.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
     c.appendChild(t);
     setTimeout(() => t.remove(), 3500);
+  },
+
+  startParkScene(emoji, name) {
+    const overlay = document.getElementById('park-overlay');
+    const petSprite = document.getElementById('park-pet-sprite');
+    const ball = document.getElementById('park-ball');
+    const status = document.getElementById('park-status');
+    const progress = document.getElementById('park-progress');
+    petSprite.textContent = emoji;
+    overlay.classList.add('active');
+    ball.classList.remove('active');
+    haptic('medium');
+
+    const messages = [
+      `${name} is exploring the park!`,
+      `${name} is chasing the other dogs!`,
+      `Fetch time!`,
+      `${name} is running full speed!`,
+      `${name} is making friends!`,
+      `${name} is getting tired...`,
+      `${name} found a mud puddle!`,
+      `${name} is panting heavily...`,
+      `Time to head home...`,
+    ];
+    let msgIdx = 0;
+    status.textContent = `Arriving at the dog park...`;
+    const duration = 8000;
+    const msgInterval = setInterval(() => {
+      msgIdx++;
+      if (msgIdx < messages.length) {
+        status.textContent = messages[msgIdx];
+        haptic('light');
+        if (msgIdx === 2) ball.classList.add('active');
+        if (msgIdx === 5) ball.classList.remove('active');
+      }
+    }, duration / messages.length);
+
+    let start = null;
+    const animateProgress = (ts) => {
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      const pct = Math.min(100, (elapsed / duration) * 100);
+      progress.style.width = pct + '%';
+      if (elapsed < duration) {
+        requestAnimationFrame(animateProgress);
+      } else {
+        clearInterval(msgInterval);
+        status.textContent = `${name} is exhausted but happy!`;
+        haptic('heavy');
+        Game.pet.needs.energy = Math.max(0, Game.pet.needs.energy - 15);
+        setTimeout(() => {
+          overlay.classList.remove('active');
+          progress.style.width = '0%';
+          ball.classList.remove('active');
+          Game.updateUI();
+          UI.toast('😴', `${name} is ready for a nap!`);
+        }, 1500);
+      }
+    };
+    requestAnimationFrame(animateProgress);
   },
 
   startWalkScene(emoji, name) {
