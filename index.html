@@ -662,7 +662,7 @@ input{font-family:inherit;font-size:16px}
 <script>
 const BREEDS = {
   dog:[
-    {id:'patterdale',name:'Patterdale Terrier',color:'#2C2C2C',emoji:'🐾',trait:'Tough, fearless & loyal. The original Hero.',mods:{happiness:1.15,energy:1.1,health:0.85},cost:0,mascot:true},
+    {id:'patterdale',name:'Patterdale Terrier',color:'#2C2C2C',emoji:'🐕',trait:'Tough, fearless & loyal. The original Hero.',mods:{happiness:1.15,energy:1.1,health:0.85},cost:0,mascot:true},
     {id:'golden',name:'Golden Retriever',color:'#DAA520',emoji:'🐕',trait:'Loyal & gentle. Loves walks.',mods:{happiness:1.1,energy:0.9},cost:0},
     {id:'husky',name:'Siberian Husky',color:'#7B9EBF',emoji:'🐺',trait:'High energy, needs exercise.',mods:{energy:1.3,hunger:1.1},cost:0},
     {id:'corgi',name:'Corgi',color:'#D2691E',emoji:'🐶',trait:'Playful & stubborn. Big appetite.',mods:{hunger:1.2,happiness:1.1},cost:0},
@@ -1151,20 +1151,24 @@ const Intro={
   totalSlides:6,
   current:0,
   timer:null,
-  SLIDE_MS:3200,
-  seen(){return localStorage.getItem('heroville_intro_seen')==='1'},
-  markSeen(){localStorage.setItem('heroville_intro_seen','1')},
+  SLIDE_MS:3500,
   start(){
-    if(this.seen()){UI.goTo('choose-type');return}
     this.current=0;
+    clearInterval(this.timer);
     const overlay=document.getElementById('intro-overlay');
     overlay.classList.add('active');
-    this.showSlide(0);
-    this.timer=setInterval(()=>{
-      this.current++;
-      if(this.current>=this.totalSlides){this.finish();return}
-      this.showSlide(this.current);
-    },this.SLIDE_MS);
+    overlay.style.opacity='1';
+    document.querySelectorAll('.intro-slide').forEach(s=>s.classList.remove('active'));
+    const fill=document.getElementById('intro-progress-fill');
+    fill.style.width='0%';
+    setTimeout(()=>{
+      this.showSlide(0);
+      this.timer=setInterval(()=>{
+        this.current++;
+        if(this.current>=this.totalSlides){this.finish();return}
+        this.showSlide(this.current);
+      },this.SLIDE_MS);
+    },300);
   },
   showSlide(i){
     document.querySelectorAll('.intro-slide').forEach(s=>s.classList.remove('active'));
@@ -1176,11 +1180,11 @@ const Intro={
   skip(){this.finish()},
   finish(){
     clearInterval(this.timer);
-    this.markSeen();
+    this.timer=null;
     const overlay=document.getElementById('intro-overlay');
-    overlay.style.transition='opacity .5s';
+    overlay.style.transition='opacity .6s';
     overlay.style.opacity='0';
-    setTimeout(()=>{overlay.classList.remove('active');overlay.style.opacity='';overlay.style.transition='';UI.goTo('choose-type')},500);
+    setTimeout(()=>{overlay.classList.remove('active');overlay.style.opacity='';overlay.style.transition='';UI.goTo('choose-type')},600);
   }
 };
 
